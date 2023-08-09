@@ -1,0 +1,270 @@
+      
+      
+      collective  form mehod
+      
+      
+      {{-- {!! Form::open([
+                    'route' => 'permissions.store',
+                    'method' => 'post'
+                    
+                ]) !!} --}}
+            
+
+
+
+
+      {{-- second method create form by using collective  --}}
+
+                {{-- <div class="form-group">
+                    <b>Name:</b>
+                {!! Form::text('name', null,[
+                    'required' =>'',
+                    'id' => 'name',
+                    'class' => 'form-control',
+                    'enctype' => 'multipart/form-data'
+                ]) !!}
+                 
+                </div> --}}
+
+
+
+                   
+                {{-- //second method of select  
+
+                {!! Form::select(
+                'module', 
+                $moduleList,
+                isset($permission->module_id) ? $permission->module_id : null,
+                ['id' => 'module',  'class' => 'form-control', 'placeholder' => 'select module']
+                 ) !!}  --}}
+
+
+                 {{-- The $key variable represents the value of the option, 
+                      while $value represents the text displayed to the user.  --}}
+
+        {{-- {!! Form::close() !!} --}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <?php
+
+use App\Models\Role;
+
+use App\Models\User;
+use App\Models\Category;
+use App\Models\Permission;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RollController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\CollectionController;
+
+
+// Route::resource('topics', TopicController::class);
+Route::resource('users', UserController::class);
+Route::resource('rolls', RollController::class);
+Route::resource('permissions', PermissionController::class);
+
+Route::get('/welcome', function () {
+    return view('welcome');
+})->middleware(\App\Http\Middleware\CustomMiddleware::class);
+
+
+
+
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RollController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PermissionController;
+
+
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::resource('users', UserController::class);
+    Route::resource('rolls', RollController::class);
+    Route::resource('permissions', PermissionController::class);
+});
+
+require __DIR__ . '/auth.php';
+
+Route::get('/home', function () {
+    return view('home');
+});
+Route::get('/about', function () {
+    return view('about');
+});
+Route::get('/contact', function () {
+    return view('contact');
+});
+
+
+//this route is used to yield content
+Route::get('/welcomeone', function () {
+    return view('Welcomeone');
+});
+Route::get('/aboutone', function () {
+    return view('aboutone');
+});
+Route::get('/post', function () {
+    return view('post');
+});
+
+
+// admin routes
+Route::get('/admindash', function () {
+    return view('admin-layouts.dashboard');
+})->middleware(['auth', 'verified'])->name('admindash');
+
+
+
+
+
+
+
+
+
+
+
+    {{-- <div class="wrapper">
+        <div class="section">
+     <div class="top_navbar">
+       <div class="hamburger">
+         <a href="#">
+           <i class="fas fa-bars"></i>
+         </a>
+       </div>
+     </div>
+     <div class="container">
+     </div>
+   </div>
+   <div class="sidebar">
+    <div class="profile">
+        <img src="" alt="profile_picture">
+        <h3>peter Parker</h3>
+        <p>Designer</p>
+    </div>
+    <ul>
+        <li>
+            <a href="#" class="active">
+                <span class="icon"><i class="fas fa-home"></i></span>
+                <span class="item">Home</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-desktop"></i></span>
+                <span class="item">My Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-user-friends"></i></span>
+                <span class="item">People</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+                <span class="item">Perfomance</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-database"></i></span>
+                <span class="item">Development</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-chart-line"></i></span>
+                <span class="item">Reports</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-user-shield"></i></span>
+                <span class="item">Admin</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <span class="icon"><i class="fas fa-cog"></i></span>
+                <span class="item">Settings</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+</div>  --}}
+
+
+
+
+
+permission Controllers
+  /*  public function index(Request $request)
+    {
+      
+        $modules = Module::all();
+        $query=Permission::with('module');
+    
+        if ($request->has('module_id') && $request->module_id != '') {
+
+            $query->whereHas('module', function ($moduleQuery) use ($request) {
+        
+                $moduleQuery->where('id', $request->module_id);
+        
+            });
+            $permissions=request()->permissions; 
+            $permission['permissions']=permission::pluck('name','id');
+            $permissions=Permission::all();
+    
+            if ($request->has('permission_id')) {
+                $permissions = $permissions->whereIn('id',$request->get('permission_id'));
+    
+            }
+               $permission['permissions']=$permissions->all();
+
+        }
+        $permissions=$query->with('module')->paginate(3);
+        return view('permissions.index', compact('permissions','modules'));
+    }*/
+
+
+
+
+
+
+use after if module  
+
+end
+}
+// Add a search filter for permissions
+            // if ($request->has('permissions')) {
+            //     $selectedPermission = $request->input('permissions');
+            //     $query->whereIn('id', $selectedPermission);
+            // }

@@ -1,0 +1,60 @@
+
+    <div class="container mt-2">
+        <center>
+            <div class="row">
+                <div class="col-lg-12 margin-tb">
+                    <div class="pull-left">
+                        <h1>Rolls Index Page</h1>
+                    </div>
+                    <div class="pull-right mb-2">
+                        <a class="btn btn-success" href="{{ route('rolls.create') }}"> Create Roll </a>
+                        <a class="btn btn-success" href="{{ route('rolls.create') }}"> Back </a>
+
+                    </div>
+                </div>
+            </div>
+        </center>
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
+        <table class="table table-bordered">
+            <thead bgcolor="Powderblue">
+                <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>permissions</th>
+                    <th width="280px">Action</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                @foreach ($rolls as $roll)
+                    <tr>
+                        <td>{{ $roll->id }}</td>
+                        <td>{{ $roll->name }}</td> 
+                        <td>{{ $roll->permissions->implode('name',',') }}</td>         
+                     @can('isAdmin')
+                        <td>
+                            <form action="{{ route('rolls.destroy', $roll->id) }}" method="POST">
+                                <button type=" Edit"> <a class="btn btn-primary"
+                                        href="{{ route('rolls.edit', $roll->id) }}">Edit </a></button>
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                        @endcan
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        {{$rolls->links()}}
+        
+    @include('admin-layouts.footer')
+
+    </div>

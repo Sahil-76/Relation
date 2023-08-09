@@ -1,0 +1,12 @@
+      {{-- <div class="form-group" class="col-6" >
+
+                    <label for="user">Roles</label>
+                    <select name="roll_id" class="form-control">
+                              @foreach ($rolls as $roll)
+    
+                                <option value="{{ $roll->id }}">{{$roll->name}}</option>
+    
+                                @endforeach
+                    </select>
+
+                </div> --}}
