@@ -1,4 +1,5 @@
-
+@include('admin-layouts.app')
+@include('admin-layouts.sidebar')
  <!DOCTYPE html>
 <html>
 <head>

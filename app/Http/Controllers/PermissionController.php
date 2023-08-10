@@ -54,42 +54,70 @@ class PermissionController extends Controller
 // dataset
 
 
-public function index(Request $request)
-{
-    // $modules = Module::all();
-    // $query = Permission::with('module');
+ // Import your Permission model at the top
+ 
+ public function index(Request $request)
+ {
+     $modules = Module::all(); // Fetch modules
+ 
+     if ($request->ajax()) {
+         $query = Permission::with('module');
+ 
+         // Apply filters if provided
+         if ($request->has('module_id')) {
+             $query->where('module_id', $request->get('module_id'));
+         }
+ 
+         // Apply permission filter if provided
+         $selectedPermissionId = $request->has('permission_id') ? $request->permission_id : null;
+                 if ($selectedPermissionId) {
+     
+                     $query->wherein('id', $selectedPermissionId);
+                 }
+             $permissions = $query->paginate(3);
+             $permission = Permission::pluck('name', 'id');
+         
+         // You can add more filters here as needed
+ 
+         $permissions = $query->get(); // Fetch filtered results
+ 
+         return DataTables::of($permissions)
+             ->addColumn('action', function ($permission) {
+                 $buttons = '<a class="btn btn-primary" href="' . route('permissions.edit', $permission->id) . '">Edit</a>';
+                 $buttons .= '<form action="' . route('permissions.destroy', $permission->id) . '" method="POST" style="display: inline;">';
+                 $buttons .= csrf_field();
+                 $buttons .= method_field('DELETE');
+                 $buttons .= '<button type="submit" class="btn btn-danger">Delete</button>';
+                 $buttons .= '</form>';
+                 return $buttons;
+             })
+             ->rawColumns(['action'])
+             ->make(true);
+     }
+ 
+     // Fetch and prepare data for non-AJAX rendering
+     $permissionsQuery = Permission::with('module');
+ 
+     // Apply filters if provided
+     if ($request->has('module_id')) {
+         $permissionsQuery->where('module_id', $request->get('module_id'));
+     }
+ 
+     // Apply permission filter if provided
+     if ($request->has('permission_id')) {
+         $permissionsQuery->where('id', $request->get('permission_id'));
+     }
+     // You can add more filters here as needed
+ 
+     $permissions = $permissionsQuery->get();
+ 
+     // Pass the $permissions and $modules variables to the view
+     return view('permissions.index', compact('permissions', 'modules'));
+ }
+ 
 
-    // if ($request->has('module_id') && $request->module_id != '') {
-    //     $query->whereHas('module', function ($moduleQuery) use ($request) {
-    //         $moduleQuery->where('id', $request->module_id);
-    //     });
-    // }
+ 
 
-    // $selectedPermissionId = $request->has('permission_id') ? $request->permission_id : null;
-    // if ($selectedPermissionId) {
-    //     $query->whereIn('id', $selectedPermissionId);
-    // }
-
-    // $permissions = $query->paginate(10); // You can adjust the pagination count here
-
-    if ($request->ajax()) {
-        $permissions = Permission::with('module')->get();
-        return DataTables::of($permissions)
-            ->addColumn('action', function ($permission) {
-                $buttons = '<a class="btn btn-primary" href="' . route('permissions.edit', $permission->id) . '">Edit</a>';
-                $buttons .= '<form action="' . route('permissions.destroy', $permission->id) . '" method="POST" style="display: inline;">';
-                $buttons .= csrf_field();
-                $buttons .= method_field('DELETE');
-                $buttons .= '<button type="submit" class="btn btn-danger">Delete</button>';
-                $buttons .= '</form>';
-                return $buttons;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-    }
-
-    return view('permissions.index');
-}
 
 
         

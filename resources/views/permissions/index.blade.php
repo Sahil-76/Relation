@@ -1,3 +1,9 @@
+
+@include('admin-layouts.app')
+@include('admin-layouts.sidebar')
+@include('admin-layouts.header')
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,6 +84,53 @@
                     <h3 class="card-title">Permissions DataTables</h3>
                 </div>
             </div>
+            <div class="container">
+
+
+
+                <div class="col-lg-6">
+                    <div class="card-body">
+                        <div class="form-group col-md">
+                            <label for="exampleInputName">Module name</label>
+                            <select class="js-example-basic-single js-states form-control" name="module_id">
+                                <option value="">All Module</option>
+                                @foreach ($modules as $module)
+                                    <option value="{{ $module->id }}"
+                                        {{ request('module_id') == $module->id ? 'selected' : '' }}>
+                                        {{ $module->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+    
+                {{-- <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card-body">
+                            <div class="form-group col-md">
+                                <label for="exampleInputName">Permission</label>
+                                <select class="js-example-basic-single form-control" name="roll_id">
+                                    <option value="">All Permissions</option>
+                                    @foreach ($permissions as $permission) 
+                                        <option value="{{ $permission->id }}" 
+                                            {{ isset($selectedPermissionId) && $selectedPermissionId == $permission->id ? 'selected' : '' }}>
+                                            {{ $permission->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+
+
+
+
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Search</button>
                 <a href="{{ Request::url() }}" class="btn btn-primary">Clear</a>
@@ -100,8 +153,12 @@
                         <th width="280px">Action</th>
                     </tr>
                 </thead>
-        
+                @php 
+                $query=http_build_query(request()->query());
+                 @endphp
             </table>
+
+
       </div>
     
     </div>
@@ -112,7 +169,7 @@
             $('#permissionsTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('permissions.index') }}",
+                ajax: "{{ route('permissions.index',$query) }}",
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
@@ -124,3 +181,4 @@
     </script>
 </body>
 </html>
+
