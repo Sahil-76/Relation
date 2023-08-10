@@ -53,7 +53,7 @@
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <h1>Users Index Page</h1>
+                        <h1>Rolls Index Page</h1>
                     </div>
                     <div class="pull-right mb-2">
                         <a class="btn btn-success" href="{{ route('rolls.create') }}"> Create Roles </a>
@@ -99,14 +99,11 @@
                     </div>
                 </div>
             </div>
-        
-
-
-    <div class="card-footer">
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a href="{{ Request::url() }}" class="btn btn-primary">Clear</a>
-    </div>
-        </form>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ Request::url() }}" class="btn btn-primary">Clear</a>
+        </div>
+    </form>
     
     <div class="container mt-2">
         <!-- ... (existing HTML code) ... -->
@@ -127,19 +124,22 @@
 
 </body>
    
-<script type="text/javascript">
+{{-- <script type="text/javascript"> --}}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
-    $(document).ready(function() {
-        $('.js-example-basic-single').select2();
-        var dataTable = $('#myTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('rolls.index',$query) }}",git 
-                type: "GET",
-            },
+
+        $(document).ready(function() {
+
+            $('#myTable').DataTable({
+
+                processing: true,
+
+                serverSide: true,
+
+                ajax: '{!! route('rolls.index',$query) !!}', // The URL for the AJAX request
+
+
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'name', name: 'name' },

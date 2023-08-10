@@ -58,3 +58,14 @@
     @include('admin-layouts.footer')
 
     </div>
+
+
+        //$(document).ready(function() {
+        $('.js-example-basic-single').select2();
+        var dataTable = $('#myTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('rolls.index',$query) }}"
+                type: "GET",
+            },

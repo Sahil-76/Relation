@@ -44,6 +44,12 @@ class PermissionController extends Controller
 
     //             $query->wherein('id', $selectedPermissionId);
     //         }
+
+
+
+
+
+
     //     $permissions = $query->paginate(3);
     //     // $permission = Permission::pluck('name', 'id');
     
@@ -56,39 +62,35 @@ class PermissionController extends Controller
 
 public function index(Request $request)
 {
-    // $modules = Module::all();
-    // $query = Permission::with('module');
+    $modules = Module::all();
+    $query = Permission::with('module');
 
-    // if ($request->has('module_id') && $request->module_id != '') {
-    //     $query->whereHas('module', function ($moduleQuery) use ($request) {
-    //         $moduleQuery->where('id', $request->module_id);
-    //     });
-    // }
+    if ($request->has('module_id') && $request->module_id != '') {
+        $query->whereHas('module', function ($moduleQuery) use ($request) {
+            $moduleQuery->where('id', $request->module_id);
+        });
+    }
 
-    // $selectedPermissionId = $request->has('permission_id') ? $request->permission_id : null;
-    // if ($selectedPermissionId) {
-    //     $query->whereIn('id', $selectedPermissionId);
-    // }
+    $selectedPermissionId = $request->has('permission_id') ? $request->permission_id : null;
+    if ($selectedPermissionId) {
+        $query->whereIn('id', $selectedPermissionId);
+    }
 
-    // $permissions = $query->paginate(10); // You can adjust the pagination count here
+    $permissions = $query->paginate(10); // You can adjust the pagination count here
 
     if ($request->ajax()) {
-        $permissions = Permission::with('module')->get();
         return DataTables::of($permissions)
+            ->addColumn('module_name', function ($permission) {
+                return $permission->module->name;
+            })
             ->addColumn('action', function ($permission) {
-                $buttons = '<a class="btn btn-primary" href="' . route('permissions.edit', $permission->id) . '">Edit</a>';
-                $buttons .= '<form action="' . route('permissions.destroy', $permission->id) . '" method="POST" style="display: inline;">';
-                $buttons .= csrf_field();
-                $buttons .= method_field('DELETE');
-                $buttons .= '<button type="submit" class="btn btn-danger">Delete</button>';
-                $buttons .= '</form>';
-                return $buttons;
+                return '<a href="' . route('permissions.edit', $permission->id) . '">Edit</a>';
             })
             ->rawColumns(['action'])
             ->make(true);
     }
 
-    return view('permissions.index');
+    return view('permissions.index', compact('permissions', 'modules', 'selectedPermissionId'));
 }
 
 
