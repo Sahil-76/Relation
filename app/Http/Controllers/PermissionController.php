@@ -91,6 +91,7 @@ class PermissionController extends Controller
                  $buttons .= '</form>';
                  return $buttons;
              })
+             
              ->rawColumns(['action'])
              ->make(true);
      }
