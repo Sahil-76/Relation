@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\StudentController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\dummyApi;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +23,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get("data",[dummyApi::class,'getData']);
 
 Route::get("list/{id}",[DeviceController::class,'list']);
+Route::get("list",[DeviceController::class,'list']);
 Route::post("add",[DeviceController::class,'add']);
 Route::put("update",[DeviceController::class,'update']);
 Route::delete("delete/{id}",[DeviceController::class,'delete']);
+
 Route::post("save",[DeviceController::class,'testData']);
+
+Route::get("students",[StudentController::class,'index']);
+Route::post("students",[StudentController::class,'store']);
+Route::get("students/{id}",[StudentController::class,'show']);
+Route::get("students/{id}/edit",[StudentController::class,'edit']);
+Route::put("students/{id}/edit",[StudentController::class,'update']);
+Route::delete("students/{id}/delete",[StudentController::class,'destroy']);
